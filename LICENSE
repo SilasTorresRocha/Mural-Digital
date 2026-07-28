@@ -19,3 +19,32 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+----------------------------------------------------------------------
+THIRD-PARTY NOTICES AND LICENSES
+----------------------------------------------------------------------
+
+This project uses and relies on third-party software and APIs. 
+Below are the attributions and licenses for these dependencies:
+
+1. Open-Meteo API (Weather Data)
+   Weather data is provided by Open-Meteo (https://open-meteo.com).
+   License: Attribution 4.0 International (CC BY 4.0).
+   The use of the API is free for non-commercial use, provided attribution is given.
+
+2. FFmpeg
+   This software uses FFmpeg (https://ffmpeg.org) for video processing and conversion.
+   FFmpeg is a trademark of Fabrice Bellard, originator of the FFmpeg project.
+   Depending on the build, FFmpeg is licensed under the GNU Lesser General Public 
+   License (LGPL) version 2.1 or later, or GNU General Public License (GPL) version 2 or later.
+
+3. Python Libraries
+   - FastAPI: MIT License
+   - Uvicorn: BSD 3-Clause License
+   - SQLAlchemy: MIT License
+   - Jinja2: BSD 3-Clause License
+   - Pillow (PIL): HPND License
+   - bcrypt: Apache License 2.0 / Dual-license
+
+These third-party tools are not covered by the MIT license of this 
+project, and retain their respective original licenses.

@@ -1,0 +1,18 @@
+TEMP.txt
+# Ignorar toda a pasta midias
+dados/midias/
+
+
+# Ignorar arquivos específicos
+dados/auditoria.log
+dados/banco.db
+
+# Ignorar todos os __pycache__ em qualquer lugar
+__pycache__/
+
+# ignorar arquivos temporários
+*.pyc
+*.pyo
+*.tmp
+*.log
+

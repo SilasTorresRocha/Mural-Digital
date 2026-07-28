@@ -1,0 +1,130 @@
+Comando de testes anteriores
+
+
+'''
+    comando = [
+            "ffmpeg", "-y",
+            "-i", caminho_temp,
+            # Limita a 720p (funciona para vídeos horizontais e verticais)
+            "-vf", "scale=1280:1280:force_original_aspect_ratio=decrease,format=yuv420p",
+            "-r", "30",               # Força a taxa de quadros para 30 FPS (Essencial)
+            "-c:v", "libx264",
+            "-profile:v", "baseline",
+            "-level", "3.1",
+            "-b:v", "1500k",          # Limita o bitrate médio a 1.5 Mbps
+            "-maxrate", "2000k",      # Trava picos de dados para evitar engasgos de rede
+            "-bufsize", "4000k",      # Tamanho do buffer do decodificador
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-movflags", "+faststart",
+            "-progress", "pipe:1",
+            caminho_final
+        ]
+
+
+    comando = [
+            "ffmpeg", "-y",
+            "-i", caminho_temp,
+            "-c:v", "libx264",
+            "-profile:v", "baseline", # Perfil mais leve para decodificadores fracos
+            "-level", "3.1",          # Nível suportado por qualquer TV Box antiga
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-movflags", "+faststart",
+            "-progress", "pipe:1",
+            caminho_final
+        ]    
+    
+    comando = [
+        "ffmpeg", "-y",
+        "-i", caminho_temp,
+        "-c:v", "libx264",
+        "-profile:v", "main",
+        "-level", "4.0",
+        "-pix_fmt", "yuv420p",
+        "-c:a", "aac",
+        "-b:a", "128k",
+        "-movflags", "+faststart",
+        "-progress", "pipe:1",
+        caminho_final
+    ]
+   
+    comando = [
+        "ffmpeg", "-y",
+        "-i", caminho_temp,
+        "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,"
+               "pad=1920:1080:(ow-iw)/2:(oh-ih)/2",
+        "-c:v", "libx264",
+        "-profile:v", "main",
+        "-level", "4.0",
+        "-pix_fmt", "yuv420p",
+        "-c:a", "aac",
+        "-b:a", "128k",
+        "-movflags", "+faststart",
+        "-progress", "pipe:1",
+        caminho_final
+    ]
+    
+
+    comando = [
+            "ffmpeg", "-y",
+            "-i", caminho_temp,
+            "-vf", "scale=-2:720", # Força a altura para 720p mantendo a proporção correta
+            "-c:v", "libx264",
+            "-profile:v", "baseline", # Perfil mais leve para decodificadores fracos
+            "-level", "3.1",          # Nível suportado por qualquer TV Box antiga
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-movflags", "+faststart",
+            "-progress", "pipe:1",
+            caminho_final
+        ]
+        '''
+
+            comando = [     # A ideia desse comando é deixar todos os vídeos padronizados para que não ocorra do ususario enviar um formato estranho e dar problema na hora de executar, em pc ate que de boas mas em TV, stics... e sei la ate onde isso vai ser rodado 
+            "ffmpeg", "-y",
+            "-i", caminho_temp,
+            # Limita a 720p (funciona para vídeos horizontais e verticais)
+            "-vf", "scale=1280:1280:force_original_aspect_ratio=decrease,format=yuv420p",
+            "-r", "30",               # Força a taxa de quadros para 30 FPS (Essencial)
+            "-c:v", "libx264",
+            "-profile:v", "baseline",
+            "-level", "3.1",
+            #"-b:v", "1500k",          # Limita o bitrate médio a 1.5 Mbps
+            "-b:v", "2500k",          # Limita o bitrate médio a 2.5 Mbps
+            "-maxrate", "2000k",      # Trava picos de dados para evitar engasgos de rede
+            "-bufsize", "4000k",      # Tamanho do buffer do decodificador
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-movflags", "+faststart",
+            "-progress", "pipe:1",
+            caminho_final
+        ]
+
+
+%-------------------------------------------------------------------------------------
+
+
+    comando = [
+            "ffmpeg", "-y",
+            "-i", caminho_temp,
+            # Limita a 1080p (Mantém a qualidade nas TVs 4K, não deforma, e aceita vídeos verticais)
+            "-vf", "scale='min(1920,iw)':'min(1920,ih)':force_original_aspect_ratio=decrease,format=yuv420p",
+            "-r", "30",               # O SEGREDO MÁGICO: Corta para 30 FPS para salvar o TV Stick
+            "-c:v", "libx264",
+            "-profile:v", "main",     # 'main' entrega qualidade superior sem pesar a CPU do stick
+            "-level", "4.0",          # Nível 4.0 suporta 1080p a 30fps tranquilamente
+            
+            # Controle de Qualidade Inteligente (Substitui o "-b:v")
+            "-crf", "23",             # 23 é o padrão ideal. (Menor = mais qualidade/mais pesado. Maior = pior qualidade/mais leve)
+            "-maxrate", "4000k",      # Impede picos gigantes de rede que causam aquele engasgo no início
+            "-bufsize", "8000k",      # Dá uma "folga" de buffer para o player do Android
+            
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-movflags", "+faststart",
+            "-progress", "pipe:1",
+            caminho_final
+        ]
