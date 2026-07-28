@@ -1,6 +1,8 @@
 TEMP.txt
-# Ignorar toda a pasta midias
-#dados/midias/
+# Ignorar tudo dentro de dados/midias
+dados/midias/*
+# Mas manter o .gitkeep
+!dados/midias/.gitkeep
 
 
 # Ignorar arquivos específicos
@@ -15,4 +17,5 @@ __pycache__/
 *.pyo
 *.tmp
 *.log
+
 
