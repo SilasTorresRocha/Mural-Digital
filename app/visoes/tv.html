@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mural Digital - TV</title>
+    <link rel="stylesheet" href="/estaticos/estilo.css">
+</head>
+
+<body class="modo-tv modelo-1">
+
+    <div class="barra-superior">
+        <!-- Relógio e Clima no Modelo 1 -->
+        <div
+            style="display: flex; align-items: center; justify-content: center; padding: 0 1.5rem; background-color: #0f172a; border-right: 2px solid #334155;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-right: 15px;">
+                <div id="hora-atual-topo" style="font-size: 1.5rem; font-weight: bold; white-space: nowrap;">00:00</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div id="temp-atual-topo" style="font-size: 1.2rem; color: #fbbf24; font-weight: bold; white-space: nowrap;">-- °C</div>
+                <div id="umidade-atual-topo" style="font-size: 0.9rem; color: #60a5fa; font-weight: bold; white-space: nowrap;">--% UR</div>
+            </div>
+        </div>
+        <div class="texto-rolagem">
+            <span id="letreiro-texto">Sejam bem-vindos à UTFPR!</span>
+        </div>
+        <div class="logo-instituicao">
+            <img src="/estaticos/Logo.png" alt="Img_Logo"
+                style="max-height: 48px; max-width: 100%; object-fit: contain;">
+        </div>
+    </div>
+
+    <div id="reprodutor" class="conteiner-tv"></div>
+
+    <div class="barra-lateral">
+        <div class="logo-instituicao">
+            <img src="/estaticos/Logo.png" alt="Img_Logo"
+                style="max-height: 60px; max-width: 100%; object-fit: contain;">
+        </div>
+
+        <div class="widget-clima">
+            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 20px;">
+                <div id="temp-atual" style="white-space: nowrap;">-- °C</div>
+                <div id="umidade-atual" style="font-size: 1.6rem; color: #60a5fa; font-weight: bold; white-space: nowrap;">--% UR</div>
+            </div>
+            <div style="font-size: 1rem; color: #cbd5e1; margin-top: 5px;">Tempo Atual</div>
+        </div>
+
+        <div class="widget-avisos" style="flex: 1; color: #cbd5e1; font-size: 1.1rem; text-align: left;">
+            <h3 style="color: white; margin-bottom: 10px;">Mural de Avisos</h3>
+            <div id="mural-lateral">
+                <p>Nenhum aviso no momento.</p>
+            </div>
+        </div>
+
+        <div class="widget-relogio">
+            <div id="hora-atual">00:00:00</div>
+            <div id="data-atual" style="font-size: 1rem; color: #94a3b8;">--/--/----</div>
+            {% if tester %}
+            <div style="margin-top: 15px; font-size: 0.9rem; color: #f87171; font-weight: bold; text-align: center; font-family: monospace; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 5px;">
+                Dev Teste: Silas Torres V{{ versao }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if tester %}
+    <div class="indicador-tester-m1" style="display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #f87171; padding: 5px 15px; border-radius: 5px; font-weight: bold; z-index: 9999; font-family: monospace;">
+        Dev Teste: Silas Torres V{{ versao }}
+    </div>
+    <style>
+        body.modelo-1 .indicador-tester-m1 {
+            display: block !important;
+        }
+    </style>
+    {% endif %}
+
+    <!-- PAINEL DE DEBUG (Modelo -1) -->
+    <div id="painel-debug">
+        <h2 style="color: #4ade80; margin-top: 0;">Smart Boot Debug & Console</h2>
+        
+        <div class="debug-grid">
+            <div class="debug-card">
+                <h3>Recursos (Estimativa)</h3>
+                <div id="debug-memoria" style="white-space: pre-line;">Calculando...</div>
+                <div id="debug-fps">FPS: --</div>
+            </div>
+            
+            <div class="debug-card">
+                <h3>Fila & Smart Boot</h3>
+                <div id="debug-fila" style="font-size: 0.9em; white-space: pre-wrap;">Aguardando dados...</div>
+            </div>
+        </div>
+        
+        <div class="debug-card" style="margin-top: 10px; flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden;">
+            <h3>Console Log</h3>
+            <div id="debug-console"></div>
+        </div>
+    </div>
+
+    <style>
+        .logo-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            text-align: center;
+            z-index: 9999;
+        }
+
+        .logo-loader .logo {
+            width: 150px;
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #334155;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            transition: width 0.3s ease;
+        }
+
+        /* Estilos do Painel de Debug */
+        #painel-debug {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 10000;
+            border: 2px solid #4ade80;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f8fafc;
+            font-family: monospace;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        body.modelo--1 #painel-debug {
+            display: flex;
+        }
+
+        body.modelo--1 .barra-superior,
+        body.modelo--1 .barra-lateral {
+            display: none !important;
+        }
+
+        .debug-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .debug-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .debug-card h3 {
+            margin: 0 0 10px 0;
+            color: #94a3b8;
+            font-size: 1rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 5px;
+        }
+
+        #debug-console {
+            flex: 1;
+            overflow-y: auto;
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            color: #a3e635;
+        }
+    </style>
+
+    <script>
+        // --- SISTEMA DE DEBUG & CONSOLE ---
+        const debugConsole = document.getElementById('debug-console');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        function appendLog(tipo, args) {
+            if (!document.body.classList.contains('modelo--1')) return;
+            const msg = Array.from(args).map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+            const span = document.createElement('div');
+            span.style.color = tipo === 'ERROR' ? '#f87171' : (tipo === 'WARN' ? '#fbbf24' : '#a3e635');
+            span.style.borderBottom = '1px solid #1e293b';
+            span.style.padding = '2px 0';
+            span.innerText = `[${new Date().toLocaleTimeString()}] [${tipo}] ${msg}`;
+            debugConsole.appendChild(span);
+            if (debugConsole.childNodes.length > 100) debugConsole.removeChild(debugConsole.firstChild);
+            
+            // Garante o auto-scroll para o final após o navegador renderizar a linha
+            requestAnimationFrame(() => {
+                debugConsole.scrollTop = debugConsole.scrollHeight;
+            });
+        }
+
+        console.log = function() { originalLog.apply(console, arguments); appendLog('INFO', arguments); };
+        console.error = function() { originalError.apply(console, arguments); appendLog('ERROR', arguments); };
+        console.warn = function() { originalWarn.apply(console, arguments); appendLog('WARN', arguments); };
+
+        // --- SISTEMA DE MÉTRICAS (FPS e RAM/Disco) ---
+        let frames = 0;
+        let lastTimeFPS = performance.now();
+        function loopFPS(time) {
+            frames++;
+            if (time - lastTimeFPS >= 1000) {
+                if (document.body.classList.contains('modelo--1')) {
+                    document.getElementById('debug-fps').innerText = `Processamento (CPU): ${frames} FPS`;
+                }
+                frames = 0;
+                lastTimeFPS = time;
+            }
+            requestAnimationFrame(loopFPS);
+        }
+        requestAnimationFrame(loopFPS);
+
+        setInterval(async () => {
+            if (!document.body.classList.contains('modelo--1')) return;
+            let info = "";
+            // Memoria RAM (Chromium API)
+            if (performance.memory) {
+                const total = Math.round(performance.memory.jsHeapSizeLimit / 1048576);
+                const used = Math.round(performance.memory.usedJSHeapSize / 1048576);
+                info += `RAM/Heap (JS): ${used} MB / ${total} MB\n`;
+            } else {
+                info += `RAM/Heap (JS): API Não Suportada\n`;
+            }
+            
+            // Armazenamento em Disco
+            if (navigator.storage && navigator.storage.estimate) {
+                const est = await navigator.storage.estimate();
+                const usedDisk = (est.usage / 1048576).toFixed(1);
+                const totalDisk = (est.quota / 1048576).toFixed(1);
+                info += `Disco / Cache: ${usedDisk} MB / ${totalDisk} MB`;
+            } else {
+                info += `Disco / Cache: API Não Suportada`;
+            }
+            document.getElementById('debug-memoria').innerText = info;
+        }, 2000);
+
+        function atualizarFilaDebug() {
+            if (!document.body.classList.contains('modelo--1')) return;
+            const elFila = document.getElementById('debug-fila');
+            if (listaConteudo.length === 0) {
+                elFila.innerText = "Lista vazia.";
+                return;
+            }
+            
+            const arquivosBaixados = listaConteudo.filter(i => i.baixado).length;
+            let html = `<div><strong>Progresso da Fila:</strong> ${arquivosBaixados}/${listaConteudo.length} arquivos no disco</div>`;
+            html += `<div style="margin-bottom:10px;"><strong>Status Background:</strong> ${downloadEmProgresso ? '⏳ Baixando...' : '✅ Ocioso'}</div>`;
+            
+            html += `<div id="lista-fila-scroll" style="max-height: 350px; overflow: hidden; position: relative;">`;
+            listaConteudo.forEach((item, idx) => {
+                const isTocando = idx === indiceAtual;
+                let iconeStatus = item.baixado ? "🟢" : "🔴";
+                let estiloLinha = isTocando ? "background: #3b82f6; color: white;" : "";
+                let idLinha = isTocando ? 'id="linha-ativa-debug"' : "";
+                html += `<div ${idLinha} style="padding: 2px 5px; border-bottom: 1px solid #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ${estiloLinha}">
+                    [${idx}] ${iconeStatus} ${item.tipo_midia === 'video' ? '🎬' : '🖼️'} ${item.caminho_arquivo}
+                </div>`;
+            });
+            html += `</div>`;
+            
+            elFila.innerHTML = html;
+            
+            // Auto-scroll para a linha ativa para a TV Box
+            const linhaAtiva = document.getElementById('linha-ativa-debug');
+            if (linhaAtiva) {
+                linhaAtiva.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        const conteinerReprodutor = document.getElementById('reprodutor');
+        const CACHE_NAME = 'mural-midia-cache-v1';
+        let listaConteudo = [];
+        let indiceAtual = 0;
+        let temporizadorExibicao = null;
+        let somHabilitado = false;
+
+        let urlOriginalTocandoAgora = null;
+        let downloadEmProgresso = false;
+        let inicializado = false;
+
+        async function mapearCacheLocal(lista) {
+            const cache = await caches.open(CACHE_NAME);
+            for (let item of lista) {
+                const url = new URL(item.caminho_arquivo, window.location.origin).href;
+                const match = await cache.match(url);
+                item.baixado = !!match; // Fica 'true' se o arquivo já existir no disco
+            }
+            return lista;
+        }
+
+        conteinerReprodutor.innerHTML = `
+            <div id="tela-carregamento" style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; inset: 0; background-color: #0f172a; z-index: 50;">
+                <div class="logo-loader" style="position: relative; transform: none; top: 0; left: 0;">
+                    <img src="/estaticos/Logo.png" class="logo" />
+                    <div class="progress-bar">
+                        <div id="barra-progresso" class="progress"></div>
+                    </div>
+                </div>
+                <div id="texto-carregamento" style="color: #cbd5e1; margin-top: 15px; font-size: 1.1rem; text-align: center;">Iniciando Smart Boot...</div>
+            </div>
+            <img id="player-img" class="midia-tv" style="display: none; z-index: 10;">
+            <video id="player-video-A" class="midia-tv" style="display: none; z-index: 2;" playsinline></video>
+            <video id="player-video-B" class="midia-tv" style="display: none; z-index: 1;" playsinline></video>
+        `;
+
+        const imgPlayer = document.getElementById('player-img');
+        const playerVideoA = document.getElementById('player-video-A');
+        const playerVideoB = document.getElementById('player-video-B');
+        const telaCarregamento = document.getElementById('tela-carregamento');
+        const barraProgresso = document.getElementById('barra-progresso');
+        const textoCarregamento = document.getElementById('texto-carregamento');
+
+        let playerVideoAtual = playerVideoA;
+        let playerVideoProximo = playerVideoB;
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(() => console.log("Service Worker ativado localmente!"));
+        }
+
+        // --- SISTEMA INTERATIVO (FULLSCREEN + SOM + MOUSE) ---
+        document.body.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.body.requestFullscreen().catch(err => {
+                    console.log(`Erro ao tentar modo tela cheia: ${err.message}`);
+                });
+            }
+            somHabilitado = true;
+            document.body.style.cursor = 'none';
+            playerVideoA.muted = false;
+            playerVideoB.muted = false;
+        });
+
+        // --- EVENTOS DO PLAYER DE VÍDEO ---
+        playerVideoA.addEventListener('ended', passarProximaMidia);
+        playerVideoB.addEventListener('ended', passarProximaMidia);
+        
+        const erroPlayer = () => {
+            console.log("A TV não conseguiu carregar este vídeo. Pulando...");
+            passarProximaMidia();
+        };
+        playerVideoA.addEventListener('error', erroPlayer);
+        playerVideoB.addEventListener('error', erroPlayer);
+
+        // SISTEMA DE RELÓGIO E CLIMA 
+        function atualizarRelogio() {
+            const agora = new Date();
+            const strHora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('hora-atual').innerText = strHora;
+            document.getElementById('data-atual').innerText = agora.toLocaleDateString('pt-BR');
+            document.getElementById('hora-atual-topo').innerText = strHora;
+        }
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+
+        async function buscarClima() {
+            try {
+                // Endpoint do Open-Meteo que suporta umidade e usa Lat/Lon das Variáveis de Ambiente
+                const resposta = await fetch('https://api.open-meteo.com/v1/forecast?latitude={{ latitude }}&longitude={{ longitude }}&current=temperature_2m,relative_humidity_2m');
+                const dados = await resposta.json();
+                
+                const strTemp = `${dados.current.temperature_2m} °C`;
+                const strUmid = `${dados.current.relative_humidity_2m}% UR`;
+                
+                document.getElementById('temp-atual').innerText = strTemp;
+                document.getElementById('temp-atual-topo').innerText = strTemp;
+                
+                document.getElementById('umidade-atual').innerText = strUmid;
+                document.getElementById('umidade-atual-topo').innerText = strUmid;
+            } catch (erro) {
+                console.error("Erro clima:", erro);
+            }
+        }
+        buscarClima();
+        setInterval(buscarClima, 1800000);
+
+        // --- REPRODUTOR DE MÍDIA REFATORADO E SMART BOOT / CACHE ---
+        async function buscarConteudoAPI() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const zonaId = urlParams.get('zona_id');
+
+                if (!zonaId) {
+                    window.location.href = "/";
+                    return;
+                }
+
+                const resposta = await fetch(`/api/conteudos_tv?zona_id=${zonaId}`);
+                if (resposta.ok) {
+                    const dadosServidor = await resposta.json();
+
+                    document.body.className = `modo-tv modelo-${dadosServidor.modelo}`;
+
+                    const stringUnicaAvisos = dadosServidor.avisos.join(" • ");
+                    document.getElementById('letreiro-texto').innerText = stringUnicaAvisos || "Sejam bem-vindos à UTFPR!";
+
+                    let htmlMuralLocal = "";
+                    if (dadosServidor.avisos.length > 0) {
+                        dadosServidor.avisos.forEach(txt => {
+                            htmlMuralLocal += `<p style="margin-top: 10px;">• ${txt}</p>`;
+                        });
+                    } else {
+                        htmlMuralLocal = "<p>Nenhum aviso prioritário no momento.</p>";
+                    }
+                    document.getElementById('mural-lateral').innerHTML = htmlMuralLocal;
+
+                    const novaLista = dadosServidor.conteudos;
+                    const jsonAntigo = JSON.stringify(listaConteudo);
+                    const jsonNovo = JSON.stringify(novaLista);
+                    const listaMudou = jsonAntigo !== jsonNovo;
+
+                    if (novaLista.length === 0) {
+                        telaCarregamento.style.display = 'flex';
+                        textoCarregamento.innerText = "Nenhuma mídia disponível nesta zona. Aguardando...";
+                        imgPlayer.style.display = 'none';
+                        playerVideoA.style.display = 'none';
+                        playerVideoB.style.display = 'none';
+                        listaConteudo = [];
+                        setTimeout(buscarConteudoAPI, 10000);
+                        return;
+                    }
+
+                    if (listaMudou) {
+                        limparCacheOrfao();
+                    }
+
+                    // Mapeia os arquivos presentes no disco local antes de instanciar o player
+                    listaConteudo = await mapearCacheLocal(novaLista);
+                    atualizarFilaDebug();
+
+                    if (!inicializado) {
+                        inicializado = true;
+                        iniciarReproducao();
+                    }
+
+                    processarFilaDownload();
+                }
+            } catch (erro) {
+                console.error("Erro ao buscar conteúdos:", erro);
+            } finally {
+                setTimeout(buscarConteudoAPI, 15000); // Poll a cada 15s para refletir mudanças do servidor
+            }
+        }
+
+        // BUFFER E CACHE
+        async function colocarNoCache(cache, url, response) {
+            try {
+                await cache.put(url, response.clone());
+                return true;
+            } catch (e) {
+                if (e.name === 'QuotaExceededError' || (e.message && e.message.toLowerCase().includes('quota'))) {
+                    console.warn("Memória máxima nativa atingida! Quota excedida ao tentar salvar no Cache API.");
+                    const liberou = await liberarEspacoNoCache(cache);
+                    if (liberou) {
+                        try {
+                            await cache.put(url, response.clone());
+                            return true;
+                        } catch (err) {
+                            console.error("Falha ao salvar mídia mesmo após tentar limpar espaço:", err);
+                            return false;
+                        }
+                    }
+                } else {
+                    console.error("Erro desconhecido ao salvar mídia no cache:", e);
+                }
+                return false;
+            }
+        }
+
+        async function liberarEspacoNoCache(cache) {
+            // Exclui arquivos antigos/distantes do cache para salvar a TV de estourar a memória (Hardware fraco)
+            const keys = await cache.keys();
+            let deletouAlgum = false;
+
+            for (let req of keys) {
+                const urlCached = new URL(req.url).pathname;
+                if (urlOriginalTocandoAgora && !urlCached.includes(urlOriginalTocandoAgora)) {
+                    await cache.delete(req);
+                    console.log("Liberando espaço extremo: Removido do cache =>", urlCached);
+                    deletouAlgum = true;
+                    break;
+                }
+            }
+            return deletouAlgum;
+        }
+
+        async function limparCacheOrfao() {
+            // Remove do cache mídias (imagens/vídeos) que não estão mais na zona via Admin
+            try {
+                const cache = await caches.open(CACHE_NAME);
+                const keys = await cache.keys();
+                const urlsAtivas = listaConteudo.map(c => new URL(c.caminho_arquivo, window.location.origin).href);
+
+                for (let req of keys) {
+                    if (!urlsAtivas.includes(req.url) && (!urlOriginalTocandoAgora || !req.url.includes(urlOriginalTocandoAgora))) {
+                        await cache.delete(req);
+                        console.log("Mídia removida do cache por não pertencer mais à zona:", req.url);
+                    }
+                }
+            } catch (e) {
+                console.error("Erro ao limpar cache órfão:", e);
+            }
+        }
+
+        // A função obterBlobUrl foi removida pois o Service Worker agora entrega a URL via rede fake diretamente do cache.
+
+        async function processarFilaDownload() {
+            if (downloadEmProgresso) return;
+            downloadEmProgresso = true;
+
+            try {
+                const cache = await caches.open(CACHE_NAME);
+
+                // Tenta puxar pro cache todas as mídias da lista na ordem
+                for (let i = 0; i < listaConteudo.length; i++) {
+                    // SE JÁ ESTÁ NO DISCO, PULA PARA O PRÓXIMO!
+                    if (listaConteudo[i].baixado) continue; 
+
+                    const url = new URL(listaConteudo[i].caminho_arquivo, window.location.origin).href;
+                    
+                    // GC Proativo
+                    if (navigator.storage && navigator.storage.estimate) {
+                        const quota = await navigator.storage.estimate();
+                        if (quota && quota.usage && quota.quota) {
+                            const usadoMB = quota.usage / (1024 * 1024);
+                            const limiteMB = quota.quota / (1024 * 1024);
+                            if (usadoMB > (limiteMB * 0.80)) {
+                                console.log("Disco quase cheio (80%+)! Acionando GC proativo...");
+                                await liberarEspacoNoCache(cache); 
+                            }
+                        }
+                    }
+                    
+                    try {
+                        const res = await fetch(url);
+                        if (res.ok) {
+                            const salvo = await colocarNoCache(cache, url, res);
+                            if (salvo) {
+                                // O SEGREDO AQUI: Libera o vídeo para entrar no loop de reprodução!
+                                listaConteudo[i].baixado = true;
+                                console.log(`Download concluído: Item ${i+1} liberado para a tela!`);
+                                atualizarFilaDebug();
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Erro de rede no download em background:", e);
+                    }
+                }
+            } catch (e) {
+                console.error("Erro no sistema de download de mídias:", e);
+            } finally {
+                downloadEmProgresso = false;
+                atualizarFilaDebug();
+            }
+        }
+
+        async function baixarMídiaInicial(dadosMidia) {
+            textoCarregamento.innerText = "Baixando mídia inicial do sistema...\nAguarde.";
+            barraProgresso.style.width = '0%';
+
+            try {
+                const cache = await caches.open(CACHE_NAME);
+                const url = new URL(dadosMidia.caminho_arquivo, window.location.origin).href;
+
+                const matchLocal = await cache.match(url);
+                if (!matchLocal) {
+                    const resposta = await fetch(url);
+                    if (resposta.ok) {
+                        const tamanhoTotal = resposta.headers.get('content-length');
+                        if (!tamanhoTotal) {
+                            // Servidor nao forneceu o tamanho total do arquivo
+                            const blob = await resposta.blob();
+                            await colocarNoCache(cache, url, new Response(blob));
+                            barraProgresso.style.width = '100%';
+                        } else {
+                            const total = parseInt(tamanhoTotal, 10);
+                            let tamanhoBaixado = 0;
+                            const leitor = resposta.body.getReader();
+                            const fragmentos = [];
+
+                            while (true) {
+                                const { done, value } = await leitor.read();
+                                if (done) break;
+                                
+                                fragmentos.push(value);
+                                tamanhoBaixado += value.length;
+                                
+                                const progressoReal = (tamanhoBaixado / total) * 100;
+                                barraProgresso.style.width = progressoReal + '%';
+                            }
+                            
+                            const blobCompleto = new Blob(fragmentos);
+                            await colocarNoCache(cache, url, new Response(blobCompleto));
+                        }
+                    }
+                } else {
+                    barraProgresso.style.width = '100%';
+                }
+                
+                // Habilita reproducao no player
+                dadosMidia.baixado = true;
+            } catch (erro) {
+                console.error("Falha no carregamento inicial:", erro);
+            }
+        }
+
+        async function iniciarReproducao() {
+            if (listaConteudo.length === 0) return;
+
+            indiceAtual = 0;
+            const primeiraMidia = listaConteudo[0];
+
+            await baixarMídiaInicial(primeiraMidia);
+
+            telaCarregamento.style.display = 'none';
+            exibirMidiaAtual();
+        }
+
+        async function exibirMidiaAtual() {
+            if (temporizadorExibicao) clearTimeout(temporizadorExibicao);
+            if (listaConteudo.length === 0) return;
+
+            if (indiceAtual >= listaConteudo.length) {
+                indiceAtual = 0;
+            }
+            
+            atualizarFilaDebug();
+
+            const dadosMidia = listaConteudo[indiceAtual];
+            urlOriginalTocandoAgora = dadosMidia.caminho_arquivo;
+            
+            // O Service Worker lida com o roteamento local, só passa a URL pura.
+            const urlFinal = dadosMidia.caminho_arquivo;
+
+            if (dadosMidia.tipo_midia === 'video') {
+                imgPlayer.style.display = 'none';
+                imgPlayer.classList.remove('ativa');
+                if (imgPlayer.src) {
+                    imgPlayer.removeAttribute('src');
+                }
+
+                // Double Buffering Lógica A e B
+                let playerTocar = playerVideoProximo;
+                let playerSair = playerVideoAtual;
+
+                // Prepara o Play
+                playerTocar.src = urlFinal;
+                playerTocar.preload = "auto";
+                playerTocar.style.display = 'block';
+                playerTocar.style.zIndex = '3';
+                
+                // Restaura o comportamento: som automático sem necessidade de clique prévio
+                playerTocar.muted = false;
+
+                setTimeout(() => playerTocar.classList.add('ativa'), 50);
+
+                // Play
+                playerTocar.play().catch(e => {
+                    console.log("Erro no autoplay do video:", e);
+                    passarProximaMidia();
+                });
+
+                // Limpa o que estava rodando antes e esconde
+                playerSair.style.zIndex = '1';
+                playerSair.style.display = 'none';
+                playerSair.classList.remove('ativa');
+                playerSair.pause();
+                playerSair.removeAttribute('src');
+                playerSair.load();
+
+                // Alterna Posições de A e B para o próximo loop
+                playerVideoAtual = playerTocar;
+                playerVideoProximo = playerSair;
+
+            } else {
+                playerVideoA.pause();
+                playerVideoA.removeAttribute('src');
+                playerVideoA.load();
+                playerVideoA.style.display = 'none';
+                playerVideoA.classList.remove('ativa');
+
+                playerVideoB.pause();
+                playerVideoB.removeAttribute('src');
+                playerVideoB.load();
+                playerVideoB.style.display = 'none';
+                playerVideoB.classList.remove('ativa');
+
+                imgPlayer.src = urlFinal;
+                imgPlayer.style.display = 'block';
+                setTimeout(() => imgPlayer.classList.add('ativa'), 50);
+
+                temporizadorExibicao = setTimeout(passarProximaMidia, dadosMidia.tempo_exibicao * 1000);
+            }
+        }
+
+        function passarProximaMidia() {
+            // Conta quantos arquivos já tem baixados EM SEQUÊNCIA desde o início
+            let arquivosLiberados = 0;
+            for (let i = 0; i < listaConteudo.length; i++) {
+                if (listaConteudo[i].baixado) {
+                    arquivosLiberados++;
+                } else {
+                    break; // Para no primeiro que ainda está baixando em segundo plano
+                }
+            }
+
+            // Segurança: Se nem o primeiro arquivo estiver pronto, segura a tela
+            if (arquivosLiberados === 0) {
+                setTimeout(passarProximaMidia, 1000);
+                return;
+            }
+
+            indiceAtual++;
+
+            // Se o índice for tocar um vídeo que não tem (ou se a playlist toda acabou),
+            // ele volta para o início (0) e continua repetindo apenas o que já tem!
+            if (indiceAtual >= arquivosLiberados || indiceAtual >= listaConteudo.length) {
+                indiceAtual = 0;
+            }
+
+            exibirMidiaAtual();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            buscarConteudoAPI();
+        });
+    </script>
+</body>
+
+</html>

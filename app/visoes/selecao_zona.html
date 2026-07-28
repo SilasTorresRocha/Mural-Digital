@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecionar Zona da TV - ASCOM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/estaticos/estilo.css">
+</head>
+
+<body
+    style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #0f172a; flex-direction: column;">
+    <div
+        style="text-align: center; max-width: 600px; padding: 2rem; background-color: #1e293b; border-radius: 8px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+        <h1 style="color: #f8fafc; font-size: 2rem; margin-bottom: 10px;">Configuração do Terminal</h1>
+        <p style="color: #94a3b8; margin-bottom: 2rem;">Selecione em qual zona/bloco esta TV está instalada para puxar
+            os conteúdos correspondentes.</p>
+
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem;">
+            {% for zona in zonas %}
+            <a href="/tv?zona_id={{ zona.id }}" class="botao" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                Zona: {{ zona.nome }}
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if zonas %}
+        <div style="color: #64748b; font-size: 0.9rem;">
+            Autoconectando na primeria zona ({{ zonas[0].nome }}) em <span id="contador">60</span> segundos...
+        </div>
+        <script>
+            let tempo = 60;
+            const elementoContador = document.getElementById('contador');
+            const urlPadrao = "/tv?zona_id={{ zonas[0].id }}";
+
+            const intervalo = setInterval(() => {
+                tempo--;
+                elementoContador.innerText = tempo;
+                if (tempo <= 0) {
+                    clearInterval(intervalo);
+                    window.location.href = urlPadrao;
+                }
+            }, 1000);
+        </script>
+        {% endif %}
+    </div>
+</body>
+
+</html>

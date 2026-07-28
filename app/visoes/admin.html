@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ASCOM - Mural Digital</title>
+    <!-- Fonte Inter do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/estaticos/estilo.css">
+</head>
+
+<body>
+    <div class="conteiner-admin">
+        <!-- Tratamento de erros do backend -->
+        <script>
+            window.onload = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const erro = urlParams.get('erro');
+                if (erro) {
+                    alert(erro.replace(/_/g, ' '));
+                    window.history.replaceState({}, document.title, "/config");
+                }
+            }
+        </script>
+
+        <header>
+            <h1>Mural Digital - Gestão ASCOM</h1>
+            <div class="cabecalho-usuario" style="display: flex; gap: 1rem; align-items: center;">
+                <span>Olá, <strong>{{ usuario }}</strong></span>
+                <a href="/usuario" class="botao secundario" style="padding: 0.5rem 1rem;">Gerenciar Usuários</a>
+                <a href="/sair" class="botao perigo" style="padding: 0.5rem 1rem;">Sair</a>
+            </div>
+        </header>
+
+        <section class="cartao">
+            <h2>Adicionar Novo Conteúdo</h2>
+            <form action="/config/novo" method="POST" enctype="multipart/form-data" id="form-novo-conteudo">
+                <div class="grupo-formulario">
+                    <label for="titulo">Título da Mídia</label>
+                    <input type="text" id="titulo" name="titulo" required
+                        placeholder="Aviso não pode bater no amiguinho">
+                </div>
+
+                <div class="grupo-formulario">
+                    <label for="tempo_exibicao">Tempo de Exibição (Segundos - Aplicável apenas a imagens)</label>
+                    <input type="number" id="tempo_exibicao" name="tempo_exibicao" value="10" min="5" required>
+                </div>
+
+                <div class="grupo-formulario">
+                    <label>Zonas de Exibição (Marque onde o conteúdo deve aparecer)</label>
+                    <div
+                        style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 5px; background-color: #0f172a; padding: 15px; border-radius: 6px; border: 1px solid #334155;">
+                        <label
+                            style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: #38bdf8; font-weight: bold;">
+                            <input type="checkbox" id="check-todas-zonas" checked>
+                            Todas as Zonas (Global)
+                        </label>
+                        <div style="width: 1px; background-color: #334155; margin: 0 10px;"></div>
+
+                        <div id="grid-zonas"
+                            style="display: flex; gap: 15px; flex-wrap: wrap; opacity: 0.5; pointer-events: none;">
+                            {% for zona in zonas %}
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="checkbox" name="zonas" value="{{ zona.nome }}" class="check-zona">
+                                {{ zona.nome }}
+                            </label>
+                            {% else %}
+                            <span style="color: #94a3b8; font-size: 0.9rem;">Nenhuma zona cadastrada. O conteúdo será
+                                Global.</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <small style="color: #94a3b8;">Se "Todas as Zonas" estiver marcado, o conteúdo passará em todos os
+                        painéis da instituição.</small>
+
+                    <script>
+                        const checkTodas = document.getElementById('check-todas-zonas');
+                        const gridZonas = document.getElementById('grid-zonas');
+                        const checksIndividuais = document.querySelectorAll('.check-zona');
+
+                        checkTodas.addEventListener('change', (e) => {
+                            if (e.target.checked) {
+                                gridZonas.style.opacity = "0.5";
+                                gridZonas.style.pointerEvents = "none";
+                                checksIndividuais.forEach(chk => chk.checked = false);
+                            } else {
+                                gridZonas.style.opacity = "1";
+                                gridZonas.style.pointerEvents = "auto";
+                            }
+                        });
+                    </script>
+                </div>
+
+                <div class="grupo-formulario">
+                    <label for="arquivo">Arquivo de Mídia (Imagem ou Vídeo)</label>
+                    <input type="file" id="arquivo" name="arquivo" accept="image/*,video/*" required>
+                </div>
+
+                <button type="submit" class="botao" id="btn-submit-conteudo">Salvar Conteúdo</button>
+
+                <!-- Progresso escondido -->
+                <div id="area-progresso" style="display: none; margin-top: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span id="texto-progresso" style="color: #cbd5e1; font-size: 0.9rem;">Processando...</span>
+                        <span id="percentual-progresso"
+                            style="color: #38bdf8; font-weight: bold; font-size: 0.9rem;">0%</span>
+                    </div>
+                    <div
+                        style="width: 100%; background-color: #334155; border-radius: 4px; overflow: hidden; height: 10px;">
+                        <div id="barra-progresso"
+                            style="width: 0%; height: 100%; background-color: #38bdf8; transition: width 0.3s ease;">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <script>
+                document.getElementById('form-novo-conteudo').addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const form = e.target;
+                    const formData = new FormData(form);
+                    const btn = document.getElementById('btn-submit-conteudo');
+                    const areaProgresso = document.getElementById('area-progresso');
+                    const textoProgresso = document.getElementById('texto-progresso');
+                    const barra = document.getElementById('barra-progresso');
+                    const percentual = document.getElementById('percentual-progresso');
+
+                    btn.disabled = true;
+                    btn.innerText = "Processando arquivo...";
+                    areaProgresso.style.display = "block";
+                    textoProgresso.innerText = "Fazendo upload (aguarde, arquivos grandes demoram um pouco)...";
+                    barra.style.width = "100%";
+                    barra.style.animation = "pulse 1.5s infinite"; // Indicação visual de carregamento contínuo
+                    percentual.innerText = "⏳";
+
+                    try {
+                        const resposta = await fetch('/config/novo', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!resposta.ok) {
+                            const err = await resposta.text();
+                            throw new Error(err);
+                        }
+
+                        const dados = await resposta.json();
+
+                        if (dados.status === 'processando') {
+                            barra.style.animation = "none";
+                            textoProgresso.innerText = "Upload concluído! Convertendo o vídeo...";
+                            barra.style.width = "0%";
+                            percentual.innerText = "0%";
+                            const tarefaId = dados.tarefa_id;
+
+                            const intervalo = setInterval(async () => {
+                                try {
+                                    const respProg = await fetch(`/config/progresso/${tarefaId}`);
+                                    const dadosProg = await respProg.json();
+
+                                    if (dadosProg.status === 'processando') {
+                                        barra.style.width = dadosProg.progresso + "%";
+                                        percentual.innerText = dadosProg.progresso + "%";
+                                    } else if (dadosProg.status === 'concluido') {
+                                        clearInterval(intervalo);
+                                        barra.style.width = "100%";
+                                        percentual.innerText = "100%";
+                                        textoProgresso.innerText = "Concluído! Recarregando...";
+                                        setTimeout(() => window.location.reload(), 1000);
+                                    } else if (dadosProg.status === 'erro') {
+                                        clearInterval(intervalo);
+                                        throw new Error(dadosProg.mensagem || "Erro na conversão");
+                                    }
+                                } catch (e) {
+                                    clearInterval(intervalo);
+                                    alert("Falha ao checar progresso: " + e.message);
+                                    btn.disabled = false;
+                                    btn.innerText = "Salvar Conteúdo";
+                                    areaProgresso.style.display = "none";
+                                }
+                            }, 2000);
+                        } else if (dados.status === 'concluido') {
+                            barra.style.animation = "none";
+                            barra.style.width = "100%";
+                            percentual.innerText = "100%";
+                            textoProgresso.innerText = "Concluído! Recarregando...";
+                            setTimeout(() => window.location.reload(), 1000);
+                        }
+
+                    } catch (erro) {
+                        alert("Erro no upload: " + erro.message);
+                        btn.disabled = false;
+                        btn.innerText = "Salvar Conteúdo";
+                        areaProgresso.style.display = "none";
+                    }
+                });
+            </script>
+        </section>
+
+        <section class="cartao">
+            <h2>Conteúdos Cadastrados</h2>
+            <table class="tabela-conteudos">
+                <thead>
+                    <tr>
+                        <th>Mídia</th>
+                        <th>Título</th>
+                        <th>Status</th>
+                        <th>Tempo (s)</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in conteudos %}
+                    <tr>
+                        <td>
+                            {% if c.tipo_midia == 'imagem' %}
+                            <img src="/midias/{{ c.caminho_arquivo }}" alt="{{ c.titulo }}" class="miniatura">
+                            {% else %}
+                            <video src="/midias/{{ c.caminho_arquivo }}" class="miniatura" muted></video>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ c.titulo }}</strong>
+                            <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">
+                                Zonas Atribuídas:
+                                {% if c.zonas %}
+                                {% for z in c.zonas %}{{ z.nome }}{% if not loop.last %}, {% endif %}{% endfor %}
+                                {% else %}
+                                Nenhuma / Global
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status {{ 'ativo' if c.ativo else 'inativo' }}">
+                                {{ 'Em Exibição' if c.ativo else 'Oculto' }}
+                            </span>
+                        </td>
+                        <td>{{ c.tempo_exibicao if c.tipo_midia == 'imagem' else 'Duração do vídeo' }}</td>
+                        <td>
+                            <div class="acoes" style="display: flex; flex-direction: column; gap: 5px;">
+                                <div style="display: flex; gap: 5px;">
+                                    <form action="/config/alternar/{{ c.id }}" method="POST">
+                                        <button class="botao secundario" type="submit">
+                                            {{ 'Ocultar' if c.ativo else 'Exibir' }}
+                                        </button>
+                                    </form>
+                                    <form action="/config/apagar/{{ c.id }}" method="POST"
+                                        onsubmit="return confirm('Tem certeza que deseja apagar a mídia {{ c.titulo }}?');">
+                                        <button class="botao perigo" type="submit">Apagar</button>
+                                    </form>
+                                </div>
+                                <details>
+                                    <summary class="botao secundario"
+                                        style="padding: 0.3rem 0.5rem; font-size: 0.8rem; text-align: center; cursor: pointer;">
+                                        Editar Zonas</summary>
+                                    <div
+                                        style="padding: 10px; background: #0f172a; margin-top: 5px; border-radius: 5px; border: 1px solid #334155;">
+                                        <form action="/config/conteudo/{{ c.id }}/zonas" method="POST">
+                                            <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px;">
+                                                <label style="font-size: 0.8rem; color: #38bdf8; width: 100%;">
+                                                    <input type="checkbox"
+                                                        onchange="this.parentElement.nextElementSibling.style.opacity = this.checked ? '0.5' : '1'; Array.from(this.parentElement.nextElementSibling.querySelectorAll('input')).forEach(i => i.checked = false);">
+                                                    Tornar Global (Limpar)
+                                                </label>
+                                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                                    {% for z in zonas %}
+                                                    <label style="font-size: 0.8rem;">
+                                                        <input type="checkbox" name="zonas_editadas"
+                                                            value="{{ z.nome }}" {% if z in c.zonas %}checked{% endif
+                                                            %}> {{ z.nome }}
+                                                    </label>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="botao"
+                                                style="padding: 0.3rem 0.5rem; font-size: 0.8rem; width: 100%;">Salvar
+                                                Locais</button>
+                                        </form>
+                                    </div>
+                                </details>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #94a3b8;">Nenhum conteúdo cadastrado na TV
+                            ainda.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SECÇÃO DE CONFIGURAÇÃO DE AVISOS -->
+        <section class="cartao">
+            <!-- Adição de Avisos -->
+            <div style="flex: 1;">
+                <h2>Adicionar Novo Aviso (Texto)</h2>
+                <form action="/config/aviso/novo" method="POST">
+                    <div class="grupo-formulario">
+                        <label for="texto">Texto do Aviso Curto (Max 150 caracteres)</label>
+                        <input type="text" id="texto" name="texto" required maxlength="150"
+                            placeholder="Hoje o RU fecha mais cedo devido à manutenção">
+                        <small style="color: #94a3b8;">Restam <span id="contador">150</span> caracteres.</small>
+                    </div>
+
+                    <div class="grupo-formulario" style="margin-top: 15px;">
+                        <label>Zonas de Exibição do Aviso</label>
+                        <div
+                            style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; background-color: #0f172a; padding: 10px; border-radius: 6px; border: 1px solid #334155;">
+                            <label
+                                style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: #f59e0b; font-weight: bold; font-size: 0.9rem;">
+                                <input type="checkbox" id="check-todas-zonas-aviso" checked>
+                                Global
+                            </label>
+                            <div style="width: 1px; background-color: #334155; margin: 0 5px;"></div>
+
+                            <div id="grid-zonas-aviso"
+                                style="display: flex; gap: 10px; flex-wrap: wrap; opacity: 0.5; pointer-events: none; font-size: 0.9rem;">
+                                {% for zona in zonas %}
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                    <input type="checkbox" name="zonas_selecionadas_aviso" value="{{ zona.nome }}"
+                                        class="check-zona-aviso">
+                                    {{ zona.nome }}
+                                </label>
+                                {% else %}
+                                <span style="color: #94a3b8;">Nenhuma zona cadastrada.</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="botao">Salvar Aviso</button>
+                </form>
+
+                <script>
+                    const textoAviso = document.getElementById('texto');
+                    const contadorAviso = document.getElementById('contador');
+                    textoAviso.addEventListener('input', () => {
+                        contadorAviso.innerText = 150 - textoAviso.value.length;
+                    });
+
+                    const checkTodasAviso = document.getElementById('check-todas-zonas-aviso');
+                    const gridZonasAviso = document.getElementById('grid-zonas-aviso');
+                    const checksIndividuaisAviso = document.querySelectorAll('.check-zona-aviso');
+
+                    checkTodasAviso.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            gridZonasAviso.style.opacity = "0.5";
+                            gridZonasAviso.style.pointerEvents = "none";
+                            checksIndividuaisAviso.forEach(chk => chk.checked = false);
+                        } else {
+                            gridZonasAviso.style.opacity = "1";
+                            gridZonasAviso.style.pointerEvents = "auto";
+                        }
+                    });
+                </script>
+            </div>
+        </section>
+
+        <!-- Tabela de Avisos Cadastrados -->
+        <section class="cartao">
+            <h2>Avisos Cadastrados (Máximo 4 Ativos)</h2>
+            <table class="tabela-conteudos">
+                <thead>
+                    <tr>
+                        <th>Texto do Aviso</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in avisos %}
+                    <tr>
+                        <td>
+                            <div>{{ a.texto }}</div>
+                            <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">
+                                Zonas Atribuídas:
+                                {% if a.zonas %}
+                                {% for z in a.zonas %}{{ z.nome }}{% if not loop.last %}, {% endif %}{% endfor %}
+                                {% else %}
+                                Nenhuma / Global
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status {{ 'ativo' if a.ativo else 'inativo' }}">
+                                {{ 'Letreiro' if a.ativo else 'Oculto' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="acoes" style="display: flex; flex-direction: column; gap: 5px;">
+                                <div style="display: flex; gap: 5px;">
+                                    <form action="/config/aviso/alternar/{{ a.id }}" method="POST">
+                                        <button class="botao secundario" type="submit">
+                                            {{ 'Ocultar' if a.ativo else 'Exibir' }}
+                                        </button>
+                                    </form>
+                                    <form action="/config/aviso/apagar/{{ a.id }}" method="POST"
+                                        onsubmit="return confirm('Apagar o aviso permanentemente?');">
+                                        <button class="botao perigo" type="submit">Apagar</button>
+                                    </form>
+                                </div>
+                                <details>
+                                    <summary class="botao secundario"
+                                        style="padding: 0.3rem 0.5rem; font-size: 0.8rem; text-align: center; cursor: pointer;">
+                                        Editar Zonas</summary>
+                                    <div
+                                        style="padding: 10px; background: #0f172a; margin-top: 5px; border-radius: 5px; border: 1px solid #334155;">
+                                        <form action="/config/aviso/{{ a.id }}/zonas" method="POST">
+                                            <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px;">
+                                                <label style="font-size: 0.8rem; color: #f59e0b; width: 100%;">
+                                                    <input type="checkbox"
+                                                        onchange="this.parentElement.nextElementSibling.style.opacity = this.checked ? '0.5' : '1'; Array.from(this.parentElement.nextElementSibling.querySelectorAll('input')).forEach(i => i.checked = false);">
+                                                    Tornar Global (Limpar)
+                                                </label>
+                                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                                    {% for z in zonas %}
+                                                    <label style="font-size: 0.8rem;">
+                                                        <input type="checkbox" name="zonas_editadas"
+                                                            value="{{ z.nome }}" {% if z in a.zonas %}checked{% endif
+                                                            %}> {{ z.nome }}
+                                                    </label>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="botao"
+                                                style="padding: 0.3rem 0.5rem; font-size: 0.8rem; width: 100%;">Salvar
+                                                Locais</button>
+                                        </form>
+                                    </div>
+                                </details>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #94a3b8;">Nenhum aviso cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+
+</html>

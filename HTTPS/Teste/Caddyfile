@@ -1,0 +1,3 @@
+apisilas.ddns.net {
+    reverse_proxy host.docker.internal:8000
+}

@@ -1,0 +1,24 @@
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy-mural
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mural:
+    image: mural_digital_ascom
+    container_name: mural_digital_container
+    ports:
+      - "${APP_PORT}:8000"
+
+volumes:
+  caddy_data:
+  caddy_config:

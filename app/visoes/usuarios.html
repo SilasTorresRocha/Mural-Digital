@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários & Instalações - Mural Digital</title>
+    <!-- Fonte Inter do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/estaticos/estilo.css">
+</head>
+
+<body>
+    <div class="conteiner-admin">
+        <script>
+            window.onload = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const erro = urlParams.get('erro');
+                const sucesso = urlParams.get('sucesso');
+                if (erro) alert("ERRO: " + erro.replace(/_/g, ' '));
+                if (sucesso) alert("SUCESSO: " + sucesso.replace(/_/g, ' '));
+                if (erro || sucesso) window.history.replaceState({}, document.title, "/usuario");
+            }
+        </script>
+
+        <header>
+            <h1>Painel de Usuários & Configuração de Locais</h1>
+            <div class="cabecalho-usuario" style="display: flex; gap: 1rem; align-items: center;">
+                <span>Logado como: <strong>{{ usuario }}</strong></span>
+                <a href="/config" class="botao secundario" style="padding: 0.5rem 1rem;">Voltar para Mídias</a>
+                <a href="/sair" class="botao perigo" style="padding: 0.5rem 1rem;">Sair</a>
+            </div>
+        </header>
+
+        {% if eh_master %}
+        <!-- Área exclusiva do Super Administrador ENV -->
+        <section class="cartao" style="display: flex; gap: 2rem;">
+            <!-- Add Usuário -->
+            <div style="flex: 1;">
+                <h2>Adicionar Sub-Administrador</h2>
+                <form action="/usuario/novo" method="POST">
+                    <div class="grupo-formulario">
+                        <label for="login">Login (ascom_terceirizado)</label>
+                        <input type="text" id="login" name="login" required placeholder="Nome de usuário">
+                    </div>
+                    <div class="grupo-formulario">
+                        <label for="senha">Senha Temporária</label>
+                        <input type="text" id="senha" name="senha" required placeholder="123mudar">
+                    </div>
+                    <button type="submit" class="botao">Criar Conta</button>
+                </form>
+            </div>
+
+            <!-- Lista de Usuários -->
+            <div style="flex: 2; border-left: 1px solid #334155; padding-left: 2rem;">
+                <h2>Contas do Banco de Dados</h2>
+                <table class="tabela-conteudos">
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in usuarios %}
+                        <tr>
+                            <td>{{ u.login }}</td>
+                            <td>
+                                <form action="/usuario/apagar/{{ u.id }}" method="POST"
+                                    onsubmit="return confirm('Deseja realmente apagar o acesso deste usuário?');">
+                                    <button class="botao perigo" type="submit">Revogar Acesso</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" style="text-align: center; color: #94a3b8;">Nenhum usuário extra criado no
+                                banco de dados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Área exclusiva do Super Administrador (Painel de Zonas) -->
+        <section class="cartao" style="display: flex; gap: 2rem; margin-top: 2rem;">
+            <!-- Add Zona -->
+            <div style="flex: 1;">
+                <h2>Adicionar Novo Local (Zona de TV)</h2>
+                <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 1rem;">Crie novos blocos, corredores ou
+                    setores da UTFPR onde os painéis de TV ficarão isolados.</p>
+                <form action="/zona/nova" method="POST">
+                    <div class="grupo-formulario">
+                        <label for="nome">Nome do Local/Bloco</label>
+                        <input type="text" id="nome" name="nome" required placeholder="Bloco N - Térreo">
+                    </div>
+                    <div class="grupo-formulario">
+                        <label for="modelo_tv">Layout Padrão da Tela</label>
+                        <select id="modelo_tv" name="modelo_tv">
+                            <option value="-1">Modelo -1 (Debug na Tela)</option>
+                            <option value="0">Modelo 0 (Apenas Mídias)</option>
+                            <option value="1">Modelo 1 (Mídias, Letreiro, Relógio e Clima no Topo)</option>
+                            <option value="2" selected>Modelo 2 (Padrão: Barra Lateral Completa)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="botao">Criar Localidade</button>
+                </form>
+            </div>
+
+            <!-- Lista de Zonas -->
+            <div style="flex: 2; border-left: 1px solid #334155; padding-left: 2rem;">
+                <h2>Zonas de Reprodução do Banco</h2>
+                <table class="tabela-conteudos">
+                    <thead>
+                        <tr>
+                            <th>Localidade Registrada</th>
+                            <th>Layout Ativo</th>
+                            <th>Ações Administrativas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for z in zonas %}
+                        <tr>
+                            <td>{{ z.nome }}</td>
+                            <td>
+                                <form action="/zona/modelo/{{ z.id }}" method="POST" style="margin: 0;">
+                                    <select name="modelo_tv" onchange="this.form.submit()" style="padding: 5px; border-radius: 5px; background: #1e293b; color: white; border: 1px solid #334155;">
+                                        <option value="-1" {% if z.modelo_tv == '-1' %}selected{% endif %}>Modelo -1 (Debug)</option>
+                                        <option value="0" {% if z.modelo_tv == '0' %}selected{% endif %}>Modelo 0 (Mídias)</option>
+                                        <option value="1" {% if z.modelo_tv == '1' %}selected{% endif %}>Modelo 1 (Topo)</option>
+                                        <option value="2" {% if z.modelo_tv == '2' %}selected{% endif %}>Modelo 2 (Padrão)</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/zona/apagar/{{ z.id }}" method="POST"
+                                    onsubmit="return confirm('ATENÇÃO: Apagar um local NÃO apaga os vídeos/avisos criados, mas as TVs pararam de tentar buscar conteúdo para este local.\nDeseja prosseguir?');">
+                                    <button class="botao perigo" type="submit">Desativar Local</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: #94a3b8;">Nenhum Local de TV Cadastrado.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% else %}
+        <!-- Área exclusiva para Sub-usuários trocarem de senha -->
+        <section class="cartao" style="max-width: 500px; margin: 0 auto;">
+            <h2>Mudar Minha Senha</h2>
+            <p style="margin-bottom: 20px; color: #94a3b8;">Por segurança, você pode alterar a senha fornecida pelo
+                administrador do Mural.</p>
+            <form action="/usuario/mudar_senha" method="POST">
+                <div class="grupo-formulario">
+                    <label for="nova_senha">Nova Senha</label>
+                    <input type="text" id="nova_senha" name="nova_senha" required
+                        placeholder="Digite a nova senha segura">
+                </div>
+                <button type="submit" class="botao">Salvar Nova Senha</button>
+            </form>
+        </section>
+        {% endif %}
+
+    </div>
+</body>
+
+</html>

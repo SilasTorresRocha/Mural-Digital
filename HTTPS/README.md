@@ -1,0 +1,1 @@
+No meu caso usei NOIP com minha dns e abri as portas 80 e 443 no roteador 
