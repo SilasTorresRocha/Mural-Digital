@@ -1,6 +1,6 @@
 TEMP.txt
 # Ignorar toda a pasta midias
-dados/midias/
+#dados/midias/
 
 
 # Ignorar arquivos específicos
