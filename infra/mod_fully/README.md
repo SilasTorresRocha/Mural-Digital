@@ -43,7 +43,7 @@ Abra o PowerShell dentro da pasta `/adb/` e execute os comandos abaixo em sequê
 # Conectar à TV (Aceite o prompt na tela da TV marcando "Sempre permitir")
 .\adb connect [IP_DA_TV]:5555
 
-# Instalar o Fully Kiosk Modificado e Assinado
+# Instalar o APK Modificado e Assinado
 .\adb -s [IP_DA_TV]:5555 install fully_silas_uncompressed-aligned-debugSigned.apk
 
 # Conceder permissão de sobreposição de tela e remover otimização de bateria
