@@ -71,3 +71,48 @@ Abra o PowerShell dentro da pasta `/adb/` e execute os comandos abaixo em sequê
 # Desativar Notificações do Sistema Operacional
 .\adb -s [IP_DA_TV]:5555 shell pm disable-user --user 0 com.amazon.tv.notificationcenter
 .\adb -s [IP_DA_TV]:5555 shell pm disable-user --user 0 com.amazon.systemnotices
+```
+**Importante:** Após rodar os comandos, reinicie o Fire TV retirando da energia.
+
+### 3. Configuração do Fully Kiosk Browser
+Ao iniciar a TV, abra o aplicativo Fully Kiosk e acesse as `Settings`:
+
+1. **Start URL:**
+
+- `Web Content Settings` > `Start URL`: Insira o IP ou Domínio do Mural Digital.
+2. **Correção do Player de Vídeo**:
+
+- `Advanced Web Settings` > `Graphics Acceleration Mode`: Alterar para **None**.
+3. **Modo Quiosque**:
+
+- `Device Management` > **Keep Screen On**: **Ativar**.
+- `Device Management` > **Launch on Boot**: **Ativar**.
+- `Kiosk Mode` > **Enable Kiosk Mode**: **Ativar** (Configurar um PIN, caso queira).
+
+### 4. Finalização Física
+Remova as pilhas do controle remoto. Como o sistema está programado para auto-boot e travado no Modo Quiosque, a ausência física de hardware de input garante que nenhum evento inesperado quebre a experiência do Mural Digital.
+
+## Como recriar o Mod
+Caso seja necessário atualizar a versão do Fully Kiosk no futuro, repita o processo utilizando o terminal na pasta `/apktool/`:
+
+1. **Descompilar o APK original:**
+`java -jar apktool.jar d fuly.apk`
+2. Modificar o arquivo `AndroidManifest.xml` (remoção de tags de gravação de áudio e alteração da flag `extractNativeLibs` para `true`).
+3. Modificar o arquivo `apktool.yml` (Adicionar `resources.arsc` na lista `doNotCompress`).
+4. **Recompilar a pasta:**
+`java -jar apktool.jar b fully -o fully_compilado.apk`
+5. **Assinar e alinhar o APK final:**
+`java -jar uber-apk-signer-1.3.0.jar -a fully_compilado.apk`
+
+## Links Oficiais para Download 
+
+Para replicar este processo em novas telas ou atualizar a versão do aplicativo, você precisará baixar as ferramentas oficiais diretamente de seus desenvolvedores.
+
+*   **Fully Kiosk Browser (APK Original):**
+    [Site Oficial - Download Box](https://www.fully-kiosk.com/en/#download-box)
+*   **ADB (Android SDK Platform-Tools):**
+    [Google Developers - Platform Tools](https://developer.android.com/studio/releases/platform-tools)
+*   **APKTool (Para descompilar/recompilar o APK):**
+    [Site Oficial / Instalação](https://apktool.org/docs/install) | [Releases no GitHub](https://github.com/iBotPeaches/Apktool/releases)
+*   **Uber APK Signer (Para assinar APK):**
+    [Releases no GitHub](https://github.com/patrickfav/uber-apk-signer/releases)
