@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="37" android:compileSdkVersionCodename="17" android:installLocation="auto" package="de.ozerov.fully" platformBuildVersionCode="37" platformBuildVersionName="17">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.NFC"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" android:required="false"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:required="false"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_WIPE_DATA"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
+    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="com.samsung.android.knox.permission.KNOX_HW_CONTROL"/>
+    <uses-permission android:name="com.samsung.android.knox.permission.KNOX_KIOSK_MODE"/>
+    <uses-permission android:name="com.samsung.android.knox.permission.KNOX_RESTRICTION_MGMT"/>
+    <uses-permission android:name="com.samsung.android.knox.permission.KNOX_SECURITY"/>
+    <uses-permission android:name="com.samsung.android.knox.permission.KNOX_MULTI_USER_MGMT"/>
+    <uses-permission android:name="com.samsung.android.knox.permission.KNOX_ROAMING"/>
+    <uses-permission android:name="android.permission.sec.MDM_HW_CONTROL"/>
+    <uses-permission android:name="net.dinglisch.android.tasker.PERMISSION_RUN_TASKS"/>
+    
+    
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED"/>
+    
+    
+    
+    <uses-feature android:name="android.hardware.location" android:required="false"/>
+    <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+    <uses-feature android:name="android.hardware.location.network" android:required="false"/>
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
+    <uses-feature android:name="android.hardware.faketouch" android:required="false"/>
+    <uses-feature android:name="android.hardware.nfc" android:required="false"/>
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false"/>
+    <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+    <uses-feature android:name="android.software.leanback" android:required="false"/>
+    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
+    <permission android:name="de.ozerov.fully.ACTIVITY_ACCESS" android:protectionLevel="signature"/>
+    <uses-permission android:name="de.ozerov.fully.ACTIVITY_ACCESS"/>
+    <permission android:label="KNOX Support permission" android:name="de.ozerov.fully.KNOX_SUPPORT_PERMISSION" android:protectionLevel="signature"/>
+    <uses-permission android:name="de.ozerov.fully.KNOX_SUPPORT_PERMISSION"/>
+    <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:resizeable="true" android:smallScreens="true" android:xlargeScreens="true"/>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.OPEN_DOCUMENT"/>
+            <data android:mimeType="*/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.CREATE_DOCUMENT"/>
+            <data android:mimeType="*/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT"/>
+            <data android:mimeType="*/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.CHOOSER"/>
+            <data android:mimeType="*/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:mimeType="*/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND"/>
+            <data android:mimeType="*/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.INSTALL_PACKAGE"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.UNINSTALL_PACKAGE"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.AUTO_REVOKE_PERMISSIONS"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.OPEN_DOCUMENT_TREE"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.CLOSE_SYSTEM_DIALOGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.WIFI_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.BLUETOOTH_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.DATA_ROAMING_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.WIRELESS_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.SYSTEM_UPDATE_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.ACCESSIBILITY_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.HOME_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.DREAM_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.WEBVIEW_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.MANAGE_UNKNOWN_APP_SOURCES"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.MANAGE_WRITE_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.USAGE_ACCESS_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.MANAGE_OVERLAY_PERMISSION"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+        </intent>
+        <intent>
+            <action android:name="androidx.camera.extensions.action.VENDOR_ACTION"/>
+        </intent>
+    </queries>
+    <permission android:name="de.ozerov.fully.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="signature"/>
+    <uses-permission android:name="de.ozerov.fully.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"/>
+    
+    
+    <uses-feature android:name="android.hardware.screen.landscape" android:required="false"/>
+    <application android:allowBackup="false" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:banner="@mipmap/tv_banner" android:enableOnBackInvokedCallback="false" android:extractNativeLibs="true" android:hardwareAccelerated="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:name="de.ozerov.fully.MyApplication" android:networkSecurityConfig="@xml/network_security_config" android:requestLegacyExternalStorage="true" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/AppTheme" android:usesCleartextTraffic="true">
+        <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true"/>
+        <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing" android:value="true"/>
+        <meta-data android:name="android.webkit.WebView.MetricsOptOut" android:value="true"/>
+        <meta-data android:name="android.supports_size_changes" android:value="true"/>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:excludeFromRecents="true" android:exported="true" android:label="@string/app_name" android:launchMode="singleTask" android:name="de.ozerov.fully.TvActivity" android:noHistory="true" android:theme="@style/AppTheme.NoActionBar.TransparentDialog" android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:excludeFromRecents="true" android:exported="true" android:label="@string/app_name" android:launchMode="singleTask" android:name="de.ozerov.fully.MainActivity" android:noHistory="true" android:theme="@style/AppTheme.NoActionBar.TransparentDialog" android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:scheme="rtsp"/>
+                <data android:scheme="fully"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="file"/>
+                <data android:mimeType="*/*"/>
+                <data android:pathPattern=".*\\.html"/>
+                <data android:pathPattern=".*\\.htm"/>
+                <data android:pathPattern=".*\\.pdf"/>
+                <data android:host="*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="file"/>
+                <data android:mimeType="application/pdf"/>
+                <data android:mimeType="text/html"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="file"/>
+                <data android:pathPattern=".*\\.html"/>
+                <data android:pathPattern=".*\\.htm"/>
+                <data android:pathPattern=".*\\.pdf"/>
+                <data android:host="*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="de.ozerov.fully.action.barcode"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity-alias android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="false" android:excludeFromRecents="true" android:exported="true" android:label="@string/app_name" android:launchMode="singleTask" android:name="de.ozerov.fully.NfcActivity" android:noHistory="true" android:resizeableActivity="true" android:targetActivity="de.ozerov.fully.MainActivity" android:theme="@style/AppTheme.NoActionBar.TransparentDialog" android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:host="*" android:scheme="https"/>
+                <data android:host="*" android:scheme="http"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="*/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <meta-data android:name="android.nfc.action.TECH_DISCOVERED" android:resource="@xml/filter_nfc"/>
+        </activity-alias>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:exported="true" android:label="@string/app_name" android:launchMode="singleTask" android:name="de.ozerov.fully.ProvisioningActivity" android:theme="@style/Theme.App.Starting" android:windowSoftInputMode="stateVisible|adjustPan"/>
+        <activity-alias android:enabled="@bool/isAndroidS" android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.AdminPolicyComplianceActivity" android:targetActivity="de.ozerov.fully.ProvisioningActivity">
+            <intent-filter>
+                <action android:name="android.app.action.ADMIN_POLICY_COMPLIANCE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity-alias>
+        <activity android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.GetProvisioningModeActivity" android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <intent-filter>
+                <action android:name="android.app.action.GET_PROVISIONING_MODE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity-alias android:enabled="@bool/isAndroidS" android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.ProvisioningSuccessActivity" android:targetActivity="de.ozerov.fully.GetProvisioningModeActivity">
+            <intent-filter>
+                <action android:name="android.app.action.PROVISIONING_SUCCESSFUL"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity-alias>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:excludeFromRecents="true" android:exported="false" android:label="@string/app_name" android:name="de.ozerov.fully.ValidatorActivity" android:noHistory="true" android:theme="@style/AppTheme.NoActionBar" android:windowSoftInputMode="adjustResize"/>
+        <activity android:enabled="false" android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.FakeLauncher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.ASSIST"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:excludeFromRecents="false" android:exported="true" android:label="@string/app_name" android:launchMode="singleTask" android:name="de.ozerov.fully.FullyActivity" android:resizeableActivity="true" android:taskAffinity="de.ozerov.fully.FullyActivity" android:theme="@style/Theme.App.Starting" android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="content"/>
+                <data android:mimeType="application/pdf"/>
+                <data android:mimeType="text/html"/>
+            </intent-filter>
+        </activity>
+        <activity-alias android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="false" android:excludeFromRecents="true" android:exported="true" android:label="@string/app_name" android:launchMode="singleTask" android:name="de.ozerov.fully.LauncherReplacement" android:resizeableActivity="true" android:targetActivity="de.ozerov.fully.FullyActivity" android:theme="@style/Theme.App.Starting" android:windowSoftInputMode="adjustResize">
+            <intent-filter android:priority="3">
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity-alias>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:excludeFromRecents="true" android:exported="false" android:label="@string/app_name" android:launchMode="singleTop" android:name="de.ozerov.fully.ScreensaverActivity" android:noHistory="true" android:resizeableActivity="true" android:theme="@style/AppTheme.NoActionBar.Transparent" android:windowSoftInputMode="adjustResize"/>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:excludeFromRecents="true" android:exported="false" android:label="@string/app_name" android:launchMode="singleTop" android:name="de.ozerov.fully.PinInputActivity" android:noHistory="true" android:permission="de.ozerov.fully.ACTIVITY_ACCESS" android:theme="@style/AppTheme.NoActionBar.TransparentDialog" android:windowSoftInputMode="adjustResize"/>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:excludeFromRecents="true" android:exported="false" android:label="@string/app_name" android:launchMode="singleTop" android:name="de.ozerov.fully.WifiSelectorActivity" android:noHistory="true" android:theme="@style/AppTheme.NoActionBar.TransparentDialog" android:windowSoftInputMode="adjustResize"/>
+        <activity android:autoRemoveFromRecents="true" android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:exported="false" android:label="@string/app_name" android:launchMode="singleTop" android:name="de.ozerov.fully.QrCaptureActivity" android:resizeableActivity="true" android:screenOrientation="fullSensor" android:theme="@style/Theme.App.Starting" android:windowSoftInputMode="adjustResize"/>
+        <activity android:configChanges="assetsPaths|mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|density|layoutDirection|fontScale" android:enabled="true" android:label="@string/app_name" android:launchMode="singleTop" android:name="de.ozerov.fully.RtspServerActivity" android:resizeableActivity="true"/>
+        <receiver android:enabled="true" android:exported="false" android:name="de.ozerov.fully.receiver.BootReceiver" android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:enabled="true" android:exported="true" android:name="de.ozerov.fully.receiver.PackageReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <data android:scheme="package"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <data android:scheme="package"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:enabled="true" android:exported="true" android:name="de.ozerov.fully.receiver.CrashTestReceiver"/>
+        <receiver android:description="@string/device_owner_description" android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.DeviceOwnerReceiver" android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin" android:resource="@xml/device_owner"/>
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+                <action android:name="android.app.action.PROFILE_PROVISIONING_COMPLETE"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:description="@string/device_admin_description" android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.MyDeviceAdmin" android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin" android:resource="@xml/device_admin1"/>
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:description="@string/device_admin_description2" android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.MyDeviceAdmin2" android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin" android:resource="@xml/device_admin2"/>
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:exported="true" android:name="com.samsung.android.knox.IntentConverterReceiver">
+            <intent-filter>
+                <action android:name="edm.intent.application.action.prevent.start"/>
+                <action android:name="edm.intent.application.action.prevent.stop"/>
+                <action android:name="edm.intent.action.ldap.createacct.result"/>
+                <action android:name="edm.intent.action.device.inside"/>
+                <action android:name="edm.intent.action.device.outside"/>
+                <action android:name="edm.intent.action.device.location.unavailable"/>
+                <action android:name="com.samsung.edm.intent.action.CERTIFICATE_REMOVED"/>
+                <action android:name="edm.intent.certificate.action.certificate.failure"/>
+                <action android:name="com.samsung.edm.intent.action.APPLICATION_FOCUS_CHANGE"/>
+                <action android:name="edm.intent.action.EMAIL_ACCOUNT_ADD_RESULT"/>
+                <action android:name="edm.intent.action.EMAIL_ACCOUNT_DELETE_RESULT"/>
+                <action android:name="com.sec.enterprise.intent.action.BLOCKED_DOMAIN"/>
+                <action android:name="com.sec.enterprise.intent.action.UPDATE_FOTA_VERSION_RESULT"/>
+                <action android:name="com.samsung.edm.intent.action.EXCHANGE_CBA_INSTALL_STATUS"/>
+                <action android:name="android.intent.action.sec.CBA_INSTALL_STATUS"/>
+                <action android:name="edm.intent.action.EXCHANGE_ACCOUNT_ADD_RESULT"/>
+                <action android:name="edm.intent.action.EXCHANGE_ACCOUNT_DELETE_RESULT"/>
+                <action android:name="com.samsung.edm.intent.action.ENFORCE_SMIME_ALIAS_RESULT"/>
+                <action android:name="edm.intent.action.knox_license.status"/>
+                <action android:name="edm.intent.action.license.status"/>
+                <action android:name="com.samsung.edm.intent.event.NTP_SERVER_UNREACHABLE"/>
+                <action android:name="edm.intent.action.enable.kiosk.mode.result"/>
+                <action android:name="edm.intent.action.disable.kiosk.mode.result"/>
+                <action android:name="edm.intent.action.unexpected.kiosk.behavior"/>
+                <action android:name="com.samsung.edm.intent.action.SIM_CARD_CHANGED"/>
+                <action android:name="android.intent.action.sec.SIM_CARD_CHANGED"/>
+                <action android:name="com.samsung.action.knox.certenroll.CEP_CERT_ENROLL_STATUS"/>
+                <action android:name="com.samsung.action.knox.certenroll.CEP_SERVICE_DISCONNECTED"/>
+                <action android:name="com.sec.enterprise.knox.intent.action.KNOX_ATTESTATION_RESULT"/>
+                <action android:name="com.sec.action.NO_USER_ACTIVITY"/>
+                <action android:name="com.sec.action.USER_ACTIVITY"/>
+                <action android:name="com.samsung.android.mdm.VPN_BIND_RESULT"/>
+            </intent-filter>
+        </receiver>
+        <service android:exported="false" android:name="de.ozerov.fully.LoadContentZipFileJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:exported="false" android:name="de.ozerov.fully.ApkInstallerJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:description="@string/service_helper_description" android:exported="false" android:name="de.ozerov.fully.HelperService"/>
+        <service android:description="@string/service_foreground_description" android:exported="false" android:foregroundServiceType="location|systemExempted" android:name="de.ozerov.fully.ForegroundService" android:process=":foreground"/>
+        <service android:description="@string/service_task_protection_description" android:exported="false" android:name="de.ozerov.fully.TaskProtectorService"/>
+        <service android:description="@string/service_motion_detection_description" android:exported="false" android:name="de.ozerov.fully.SoundMeterService"/>
+        <service android:description="@string/service_cloud_description" android:exported="false" android:name="de.ozerov.fully.CloudService"/>
+        <service android:description="@string/service_remote_admin_description" android:exported="false" android:name="de.ozerov.fully.remoteadmin.RemoteAdminService"/>
+        <service android:description="@string/service_motion_detection_description" android:exported="false" android:name="de.ozerov.fully.motiondetector.MotionDetectorService"/>
+        <service android:description="@string/service_motion_detection_description" android:exported="false" android:name="de.ozerov.fully.motiondetector.MotionDetectorServiceX"/>
+        <service android:exported="false" android:label="@string/app_name" android:name="de.ozerov.fully.NotificationService" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService"/>
+            </intent-filter>
+        </service>
+        <service android:exported="true" android:label="@string/app_name" android:name="de.ozerov.fully.MyAccessibilityService" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/accessibility_service_config"/>
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+        </service>
+        <provider android:authorities="de.ozerov.fully.fileprovider" android:exported="false" android:grantUriPermissions="true" android:name="androidx.core.content.FileProvider">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider_paths"/>
+        </provider>
+        <uses-library android:name="androidx.camera.extensions.impl" android:required="false"/>
+        <service android:enabled="false" android:exported="false" android:name="androidx.camera.core.impl.MetadataHolderService">
+            <meta-data android:name="androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER" android:value="androidx.camera.camera2.Camera2Config$DefaultProvider"/>
+        </service>
+        <receiver android:exported="false" android:name="org.altbeacon.beacon.startup.StartupBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+            </intent-filter>
+        </receiver>
+        <service android:enabled="true" android:exported="false" android:foregroundServiceType="location" android:isolatedProcess="false" android:label="beacon" android:name="org.altbeacon.beacon.service.BeaconService"/>
+        <service android:enabled="true" android:exported="false" android:name="org.altbeacon.beacon.BeaconIntentProcessor"/>
+        <service android:exported="false" android:name="org.altbeacon.beacon.service.ScanJob" android:permission="android.permission.BIND_JOB_SERVICE">
+            <meta-data android:name="immediateScanJobId" android:value="208352939"/>
+            <meta-data android:name="periodicScanJobId" android:value="208352940"/>
+        </service>
+        <service android:exported="false" android:name="org.altbeacon.bluetooth.BluetoothTestJob" android:permission="android.permission.BIND_JOB_SERVICE">
+            <meta-data android:name="jobId" android:value="1799803768"/>
+        </service>
+        <uses-library android:name="androidx.window.extensions" android:required="false"/>
+        <uses-library android:name="androidx.window.sidecar" android:required="false"/>
+        <provider android:authorities="de.ozerov.fully.androidx-startup" android:exported="false" android:name="androidx.startup.InitializationProvider">
+            <meta-data android:name="androidx.emoji2.text.EmojiCompatInitializer" android:value="androidx.startup"/>
+            <meta-data android:name="androidx.lifecycle.ProcessLifecycleInitializer" android:value="androidx.startup"/>
+            <meta-data android:name="okhttp3.internal.platform.PlatformInitializer" android:value="androidx.startup"/>
+            <meta-data android:name="androidx.profileinstaller.ProfileInstallerInitializer" android:value="androidx.startup"/>
+        </provider>
+        <service android:enabled="@bool/acra_enable_legacy_service" android:exported="false" android:name="org.acra.sender.LegacySenderService" android:process=":acra"/>
+        <service android:enabled="@bool/acra_enable_job_service" android:exported="false" android:name="org.acra.sender.JobSenderService" android:permission="android.permission.BIND_JOB_SERVICE" android:process=":acra"/>
+        <provider android:authorities="de.ozerov.fully.acra" android:exported="false" android:grantUriPermissions="true" android:name="org.acra.attachment.AcraContentProvider" android:process=":acra"/>
+        <receiver android:directBootAware="false" android:enabled="true" android:exported="true" android:name="androidx.profileinstaller.ProfileInstallReceiver" android:permission="android.permission.DUMP">
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.SKIP_FILE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION"/>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
