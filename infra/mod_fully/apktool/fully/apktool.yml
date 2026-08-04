@@ -1,0 +1,27 @@
+version: 3.0.3
+apkFileName: full.apk
+usesFramework:
+  ids:
+  - 1
+sdkInfo:
+  minSdkVersion: 23
+  targetSdkVersion: 36
+versionInfo:
+  versionCode: 101483
+  versionName: 1.61
+resourcesInfo:
+  packageId: 127
+doNotCompress:
+- arsc
+- ogg
+- png
+- so
+- assets/dexopt/baseline.prof
+- assets/dexopt/baseline.profm
+- res/raw/isrg_root_x1.der
+- res/raw/le_r10.der
+- res/raw/le_r11.der
+- res/raw/le_r3.der
+- assets/
+- res/raw/
+- resources.arsc
